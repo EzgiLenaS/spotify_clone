@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import { clerkMiddleware } from "@clerk/express";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -14,10 +15,21 @@ const app = express();
 const PORT = process.env.PORT;
 
 // ROUTES
-/* app.get("/", (req, res) => {
-    res.send("hello world");
+/** app.get("/", (req, res) =>
+ * {res.send("hello world");
 });
 */
+
+/**
+ * The clerkMiddleware() function checks the request's
+ * cookies and headers for a session JWT and if found,
+ * attaches the Auth
+ * object to the request object under the auth key.
+ * 
+ * This will add auth to req object => req.auth
+ * req.auth.userId and the others
+ */
+app.use(clerkMiddleware());
 
 // Middleware for getting the value from req.body
 app.use(express.json()); // to parse req.body
