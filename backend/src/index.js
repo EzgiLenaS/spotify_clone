@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
+import { fileUpload } from "express-fileupload";
+import path from "path";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -11,6 +13,7 @@ import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
+const __dirname = path.resolve();
 const app = express();
 const PORT = process.env.PORT;
 
@@ -33,6 +36,15 @@ app.use(clerkMiddleware());
 
 // Middleware for getting the value from req.body
 app.use(express.json()); // to parse req.body
+app.use(
+    fileUpload({
+        useTempFiles: true,
+        tempFileDir: path.join(__dirname, "tmp"),
+        createParentPath: true,
+        limits: {
+            fileSize: 10 * 1024 * 1024, // 10MB max file size
+        },
+}));
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
