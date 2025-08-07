@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
-import { fileUpload } from "express-fileupload";
+import fileUpload from "express-fileupload";
 import path from "path";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
@@ -55,6 +55,11 @@ app.use("/api/songs", songRoutes);
 // Albums
 app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
+
+// Error handler middleware
+app.use((error, req, res, next) => {
+    res.status(500).json({ message: process.env.NODE_ENV === "production" ? "Internal server error": error.message });
+});
 
 app.listen(PORT, () => 
 {
