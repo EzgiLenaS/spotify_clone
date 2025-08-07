@@ -69,7 +69,7 @@ export const deleteSong = async (req, res, next) => {
         const song = await Song.findById(id);
 
         if (!song) {
-            return res.status(400).json({ message: "The song doesnt exist in the database" });
+            return res.status(404).json({ message: "The song is not found" });
         }
 
         // If the song belongs to an album, update the album's songs array
@@ -117,7 +117,7 @@ export const deleteAlbum = async (req, res, next) => {
         const album = await Album.findById(id);
 
         if(!album) {
-            return res.status(400).json({ message: "The album doesnt exist in the database" });
+            return res.status(404).json({ message: "The album is not found" });
         }
 
 
