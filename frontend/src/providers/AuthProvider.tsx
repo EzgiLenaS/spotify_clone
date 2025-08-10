@@ -1,3 +1,9 @@
+/**
+ * We covered <App/> with this and we do not need to write the
+ * updateApiToken part every single time when we write a func.
+ * This tsx helps us to write only one time.
+ */
+
 import { axiosInstance } from "../lib/axios";
 import { useAuth } from "@clerk/clerk-react";
 import { LoaderPinwheelIcon } from "lucide-react";
@@ -8,6 +14,8 @@ const updateApiToken = (token: string | null) => {
     else delete axiosInstance.defaults.headers.common['Authorization'];
 }
 
+// This children provides us to covering other <> that type of things
+// Ex: we cant write <Topbar><Topbar/> like this because we didnt write that children thing
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { getToken } = useAuth();
     const [loading, setLoading] = useState(true);
