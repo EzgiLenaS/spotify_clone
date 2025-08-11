@@ -4,7 +4,7 @@
  * This tsx helps us to write only one time.
  */
 
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { useAuth } from "@clerk/clerk-react";
 import { LoaderPinwheelIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 const updateApiToken = (token: string | null) => {
     if (token) axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     else delete axiosInstance.defaults.headers.common['Authorization'];
-}
+};
 
 // This children provides us to covering other <> that type of things
 // Ex: we cant write <Topbar><Topbar/> like this because we didnt write that children thing
