@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protectRoute, requireAdmin } from "../middleware/auth.middleware.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
 import { getAllUsers, getMessages } from "../controller/user.controller.js";
 
 const userRoutes = Router();
@@ -13,6 +13,6 @@ const userRoutes = Router();
 // todo: later we can use getAllUsers only for the admin
 // todo: listeners can chat only with their friends when they follow them
 userRoutes.get("/", protectRoute, getAllUsers);
-userRoutes.get("/", protectRoute, getMessages);
+userRoutes.get("/messages", protectRoute, getMessages);
 
 export default userRoutes;
