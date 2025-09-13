@@ -45,7 +45,7 @@ jobs:
           fi
 
       - name: Run AI updater
-        if: steps.maybe_skip.outputs.skip == 'false'
+        #if: steps.maybe_skip.outputs.skip == 'false'
         env:
           GH_NAME:  ${{ secrets.GH_NAME || github.actor }}
           GH_EMAIL: ${{ secrets.GH_EMAIL || format('{0}@users.noreply.github.com', github.actor) }}
