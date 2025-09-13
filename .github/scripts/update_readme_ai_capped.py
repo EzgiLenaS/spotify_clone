@@ -1,3 +1,4 @@
+'''Python code to write automatic readme.md'''
 import os, re, json, random, time, hashlib, requests, subprocess, smtplib
 from email.mime.text import MIMEText
 from datetime import datetime
