@@ -63,7 +63,7 @@ USER_TMPL = """Context (trimmed):
 Continue category cycle from: {next_cat}
 
 Output EXACTLY {n} lines with this shape (no extra text):
-- [#{seq}] {Category}: {text}
+- [#{seq}] {{Category}}: {{text}}
 """
 
 # --- Yardımcılar ---
