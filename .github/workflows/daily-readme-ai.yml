@@ -1,0 +1,65 @@
+name: Daily README (AI)
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 23:00 TRT (UTC+3)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        run: pip install requests
+
+      # (Opsiyonel) Bugün kullanıcı commit attıysa otomatiği atla
+      - name: Skip if user already committed today (TRT)
+        id: maybe_skip
+        shell: bash
+        env:
+          TZ: Europe/Istanbul
+        run: |
+          today="$(date +%Y-%m-%d)"
+          if git log --since="$today 00:00" --grep="\[auto-readme\]" --invert-grep --pretty=oneline | grep -q .; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "User already committed today; skipping."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "No user commits today; proceeding."
+          fi
+
+      - name: Run AI updater
+        if: steps.maybe_skip.outputs.skip == 'false'
+        env:
+          GH_NAME:  ${{ secrets.GH_NAME || github.actor }}
+          GH_EMAIL: ${{ secrets.GH_EMAIL || format('{0}@users.noreply.github.com', github.actor) }}
+          LLM_API_URL:  ${{ secrets.LLM_API_URL }}
+          LLM_API_KEY:  ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL:    ${{ secrets.LLM_MODEL }}
+          # Mail opsiyonel (SMTP)
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME:${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD:${{ secrets.SMTP_PASSWORD }}
+          MAIL_TO:      ${{ secrets.MAIL_TO }}
+          MAIL_FROM:    ${{ secrets.MAIL_FROM }}
+        run: |
+          git config user.name  "$GH_NAME"
+          git config user.email "$GH_EMAIL"
+          python .github/scripts/update_readme_ai_capped.py
